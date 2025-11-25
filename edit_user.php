@@ -2,6 +2,7 @@
 session_start();
 include 'connection.php';
 
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.html");
     exit();
@@ -17,37 +18,48 @@ $success = '';
 $user = null;
 
 if (isset($_GET['id'])) {
+    // Convert ID to integer for safety
     $user_id = intval($_GET['id']);
     
+    // fetch user information
     $sql = "SELECT user_id, userName, email, userType FROM tbl_user WHERE user_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
     
+    // Check if user exists
     if ($result->num_rows > 0) {
+        
         $user = $result->fetch_assoc();
     } else {
+        // User not found - redirect back to manage users page
         header("Location: manage_users.php");
         exit();
     }
     $stmt->close();
 }
 
+// Process form submission to update user
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'])) {
+    // Get form data
     $user_id = intval($_POST['user_id']);
     $username = htmlspecialchars($_POST['username'] ?? '');
     $email = htmlspecialchars($_POST['email'] ?? '');
     $usertype = htmlspecialchars($_POST['usertype'] ?? '');
     
+    
     if (empty($username) || empty($email) || empty($usertype)) {
         $error = "All fields are required!";
     } else {
+     
         $sql = "UPDATE tbl_user SET userName = ?, email = ?, userType = ? WHERE user_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("sssi", $username, $email, $usertype, $user_id);
         
+
         if ($stmt->execute()) {
+        
             $success = "User updated successfully!";
             $user['userName'] = $username;
             $user['email'] = $email;
@@ -98,15 +110,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'])) {
                         <h1 class="text-2xl ms-2 text-gray-500 group-hover:text-white transition">Add Products</h1>
                     </a>
 
-                    <a href="manage_users.php" class="group hover:bg-blue-500 p-3 rounded-xl flex items-center w-full transition bg-blue-500">
-                        <svg class="text-blue-500 group-hover:text-white transition text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24">
+                    <a href="manage_users.php" class="group hover:bg-blue-500 p-3 rounded-xl flex items-center w-full transition">
+                        <svg class="text-blue-500 group-hover:text-white transition" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.657-.671-3.157-1.76-4.233m2.76 4.233l.812 2.582m-4.572-8.725a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-9 6.75c1.657 0 3.157.671 4.233 1.76.985.99 1.644 2.338 1.821 3.721H3.75a4.125 4.125 0 0 1 4.275-5.481Zm0 0s3.063-.669 4.275-1.481" />
                         </svg>
-                        <h1 class="text-2xl ms-2 text-white transition">Manage User</h1>
+                        <h1 class="text-2xl ms-2 text-gray-500 group-hover:text-white transition">Manage User</h1>
                     </a>
                 </div>
 
-                <!-- Logout button at the bottom -->
+                
                 <div class="mt-auto p-4 w-full">
                     <a href="logout.php" class="group hover:bg-blue-500 p-3 rounded-xl flex items-center w-full transition">
                         <svg class="text-blue-500 group-hover:text-white transition" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -147,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'])) {
                 </div>
             </div>
 
-            <!-- Edit Form -->
+            
             <div class="w-full p-6">
                 <div class="bg-white rounded-lg shadow p-8 max-w-2xl">
                     <h3 class="text-2xl font-bold mb-6">Edit User</h3>

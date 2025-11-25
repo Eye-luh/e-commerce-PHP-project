@@ -12,9 +12,12 @@ if (isset($_SESSION['userType']) && strtolower($_SESSION['userType']) !== 'admin
     exit();
 }
 
+// Handle user deletion if delete_id is provided
 if (isset($_GET['delete_id'])) {
+    // Get user ID to delete and convert to integer for safety
     $delete_id = intval($_GET['delete_id']);
-    $delete_id = max(1, $delete_id); // Prevent deleting admin
+    // Ensure we're not deleting the first admin user
+    $delete_id = max(1, $delete_id);
     
     $sql = "DELETE FROM tbl_user WHERE user_id = ?";
     $stmt = $conn->prepare($sql);
@@ -29,10 +32,13 @@ if (isset($_GET['delete_id'])) {
     $stmt->close();
 }
 
-// Fetch all users
+
+$error = isset($error) ? $error : '';
+
 $sql = "SELECT user_id, userName, email, userType FROM tbl_user ORDER BY user_id DESC";
 $result = mysqli_query($conn, $sql);
 $users = [];
+
 if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
         $users[] = $row;
