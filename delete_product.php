@@ -9,6 +9,11 @@
     exit();
 }
 
+    if (isset($_SESSION['userType']) && strtolower($_SESSION['userType']) !== 'admin') {
+    header("Location: dashboard.php");
+    exit();
+}
+
     if(isset($_GET['id'])){
         $product_id = $_GET['id'];
 
