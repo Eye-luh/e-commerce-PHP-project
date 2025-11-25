@@ -92,7 +92,6 @@ if (isset($_GET['id'])) {
                 </a>
             </div>
 
-            <!-- Logout button at the bottom -->
             <div class="mt-auto p-4 w-full">
                 <a href="logout.php" class="group hover:bg-blue-500 p-3 rounded-xl flex items-center w-full transition">
                     <svg class="text-blue-500 group-hover:text-white transition" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -106,7 +105,6 @@ if (isset($_GET['id'])) {
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="bg-gray-200 rounded-2xl col-span-1 md:col-span-10">
 
         <div class="bg-white h-20 rounded-xl w-full p-2 flex justify-between items-center">
@@ -121,10 +119,8 @@ if (isset($_GET['id'])) {
             <div class="flex justify-end items-center w-full p-4">
                 <div class="flex justify-center items-center gap-4">
                     <button class="border-2 border-blue-500 p-2 rounded-3xl">
-                        <!-- Bell Icon -->
                     </button>
                     <button class="border-2 border-blue-500 p-2 rounded-3xl">
-                        <!-- Settings Icon -->
                     </button>
                 </div>
                 <div class="p-4 flex gap-2 items-center max-w-xs sm:max-w-sm md:max-w-md overflow-hidden">

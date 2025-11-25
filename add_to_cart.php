@@ -44,7 +44,7 @@ if ($qty > $product['quantity']) {
 }
 
 if (isset($_SESSION['cart'][$product_id])) {
-    // Calculate new total quantity
+    // Calculate sa new total quantity
     $new_qty = $_SESSION['cart'][$product_id]['qty'] + $qty;
     // Verify new total doesn't exceed available stock
     if ($new_qty > $product['quantity']) {

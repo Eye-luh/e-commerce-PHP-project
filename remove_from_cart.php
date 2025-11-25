@@ -1,8 +1,6 @@
 <?php
-// Start session to access cart data
 session_start();
 
-// Set response type to JSON for AJAX requests
 header('Content-Type: application/json');
 
 // Only accept POST requests
@@ -17,14 +15,13 @@ $data = json_decode(file_get_contents('php://input'), true);
 // Get product ID to remove from cart
 $product_id = isset($data['product_id']) ? intval($data['product_id']) : 0;
 
-// Validate product ID
 if ($product_id <= 0) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid product ID']);
     exit();
 }
 
-// Check if product exists in cart
+// Check if product exists sa cart
 if (!isset($_SESSION['cart'][$product_id])) {
     http_response_code(404);
     echo json_encode(['error' => 'Item not in cart']);

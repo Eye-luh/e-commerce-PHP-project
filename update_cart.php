@@ -1,19 +1,15 @@
 <?php
-// Start session to manage cart data
 session_start();
 include 'connection.php';
 
-// Set response type to JSON for AJAX requests
 header('Content-Type: application/json');
 
-// Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
     exit();
 }
 
-// Parse JSON data from AJAX request
 $data = json_decode(file_get_contents('php://input'), true);
 // Get product ID and new quantity
 $product_id = isset($data['product_id']) ? intval($data['product_id']) : 0;
@@ -60,7 +56,6 @@ if ($qty > $product['quantity']) {
 // Update quantity in cart
 $_SESSION['cart'][$product_id]['qty'] = $qty;
 
-// Send success response
 http_response_code(200);
 echo json_encode([
     'success' => true,
@@ -68,7 +63,6 @@ echo json_encode([
     'new_qty' => $qty
 ]);
 
-// Close database connections
 $stmt->close();
 $conn->close();
 ?>

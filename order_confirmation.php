@@ -10,8 +10,6 @@ if (!isset($_SESSION['order_summary'])) {
 // Get order details from session
 $order = $_SESSION['order_summary'];
 
-// Determine redirect destination based on login status
-// If user is logged in, go to dashboard. Otherwise go to home page
 $continueShoppingUrl = isset($_SESSION['user_id']) ? 'dashboard.php' : 'index.php';
 ?>
 <!DOCTYPE html>
@@ -76,7 +74,6 @@ $continueShoppingUrl = isset($_SESSION['user_id']) ? 'dashboard.php' : 'index.ph
                     </div>
                 </div>
 
-                <!-- Buttons -->
                 <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                     <a href="<?php echo $continueShoppingUrl; ?>" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition font-semibold text-base">
                         Continue Shopping
@@ -85,7 +82,6 @@ $continueShoppingUrl = isset($_SESSION['user_id']) ? 'dashboard.php' : 'index.ph
                         Logout
                     </a>
                 </div>
-
                 <p class="text-gray-600 mt-4 sm:mt-6 text-xs sm:text-sm break-all">A confirmation email has been sent to <?php echo htmlspecialchars($order['email']); ?></p>
             </div>
         </div>

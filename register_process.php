@@ -20,13 +20,13 @@
             exit();
         } else {
 
-            echo "❌ Error: " . mysqli_error($conn);
+            echo "Error: " . mysqli_error($conn);
         }
 
         $conn->close();
     } else {
        
-        echo "⚠️ Invalid request method.";
+        echo "Invalid request method.";
     }
 
 ?>

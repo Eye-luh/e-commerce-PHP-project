@@ -48,7 +48,7 @@ if (isset($_SESSION['userType']) && strtolower($_SESSION['userType']) !== 'admin
                     <h1 class="text-2xl ms-2 text-gray-500 group-hover:text-white transition">Add Products</h1>
                 </a>
 
-                <a href="update.html" class="group hover:bg-blue-500 p-3 rounded-xl flex items-center w-full transition">
+                <a href="manage_users.php" class="group hover:bg-blue-500 p-3 rounded-xl flex items-center w-full transition">
                     <svg class="text-blue-500 group-hover:text-white transition" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M10 15H6a4 4 0 0 0-4 4v2"/>
                         <path d="m14.305 16.53.923-.382"/>
@@ -193,15 +193,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt_prod->bind_param("sdiss", $product_name, $price, $quantity, $targetFilePath, $category_id);
 
             if ($stmt_prod->execute()) {
-                echo "<script>alert('✅ Product added successfully!'); window.location='dashboard.php';</script>";
+                echo "<script>alert('Product added successfully!'); window.location='dashboard.php';</script>";
             } else {
-                echo "<script>alert('❌ Failed to insert product.');</script>";
+                echo "<script>alert('Failed to insert product.');</script>";
             }
         } else {
-            echo "<script>alert('❌ Failed to insert category.');</script>";
+            echo "<script>alert('Failed to insert category.');</script>";
         }
     } else {
-        echo "<script>alert('❌ Image upload failed.');</script>";
+        echo "<script>alert('Image upload failed.');</script>";
     }
 }
 ?>

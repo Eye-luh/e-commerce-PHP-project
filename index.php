@@ -79,9 +79,9 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('✅ Product added to cart! (Qty: ' + data.item_qty + ')');
+                    alert('Product added to cart! (Qty: ' + data.item_qty + ')');
                 } else {
-                    alert('❌ Error: ' + data.error);
+                    alert('Error: ' + data.error);
                 }
             })
             .catch(error => {

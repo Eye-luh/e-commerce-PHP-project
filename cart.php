@@ -9,7 +9,7 @@ if (!isset($_SESSION['cart'])) {
 $cartItems = $_SESSION['cart'];
 $total = 0;
 
-// Determine where to redirect based on login status, mag depende sa iya role
+// mag dteremine kung asa siya na page mo direct after logged, mag depende sa iya role
 $backUrl = isset($_SESSION['user_id']) ? 'dashboard.php' : 'index.php';
 ?>
 <!DOCTYPE html>

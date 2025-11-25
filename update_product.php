@@ -20,9 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("sssddi", $category_name, $descCategoryName, $product_name, $price, $quantity, $product_id);
 
     if ($stmt->execute()) {
-        echo "<script>alert('✅ Product updated successfully!'); window.location='dashboard.php';</script>";
+        echo "<script>alert('Product updated successfully!'); window.location='dashboard.php';</script>";
     } else {
-        echo "<script>alert('❌ Failed to update product.');</script>";
+        echo "<script>alert('Failed to update product.');</script>";
     }
 }
 ?>

@@ -53,15 +53,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: dashboard.php');
                 exit();
             } else {
-                echo '❌ Username or Password does not match.';
+                echo 'Username or Password does not match.';
             }
         } else {
-            echo '❌ No account found with that username.';
+            echo 'No account found with that username.';
         }
         $stmt->close();
     } else {
         error_log("Prepare failed: " . $conn->error);
-        echo "❌ Internal error, please try later.";
+        echo "Internal error, please try later.";
     }
 }
 ?>
