@@ -9,7 +9,7 @@ if (!isset($_SESSION['cart'])) {
 $cartItems = $_SESSION['cart'];
 $total = 0;
 
-// mag dteremine kung asa siya na page mo direct after logged, mag depende sa iya role
+// mag determine kung asa siya na page mo direct after logged, mag depende sa iya role
 $backUrl = isset($_SESSION['user_id']) ? 'dashboard.php' : 'index.php';
 ?>
 <!DOCTYPE html>
@@ -18,146 +18,269 @@ $backUrl = isset($_SESSION['user_id']) ? 'dashboard.php' : 'index.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Shopping Cart</title>
+    <!--  Font Awesome icons para parehas sa tanan pages -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Shopping Cart - Adidadidadas</title>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Same gradient sa index.php */
+        }
+        .cart-item-card {
+            transition: all 0.3s ease;
+        }
+        .cart-item-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
-<body>
-    <div class="min-h-screen bg-gray-100">
-        <!-- Header -->
-        <div class="bg-gray-200 p-4">
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-6">
-                <div class="flex items-center gap-4 w-full sm:w-auto">
-                    <a href="<?php echo $backUrl; ?>" class="text-xl font-bold text-gray-800 hover:text-blue-500">
-                        ← Back to Shop
-                    </a>
-                    <h1 class="text-2xl sm:text-4xl font-bold">Adidadidadas</h1>
-                </div>
+<body class="bg-gray-50 min-h-screen">
+    <!--  Header design - gihimo nga gradient -->
+    <!-- From gray bg karun gradient background with icons, (ug bati utruha lang() -->
+    <header class="gradient-bg shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                
                 <div class="flex items-center gap-4">
-                    <a href="cart.php" class="text-blue-500 font-semibold">
-                        Cart (<?php echo count($cartItems); ?>)
+                    <a href="<?php echo $backUrl; ?>" class="text-white hover:text-gray-200 font-medium flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to <?php echo isset($_SESSION['user_id']) ? 'Dashboard' : 'Shop'; ?>
                     </a>
+                    <div class="flex items-center gap-3">
+                        <?php
+                        $logo_path = 'uploads/LOGO.png';
+                        if (file_exists($logo_path)) {
+                            echo '<img src="' . $logo_path . '" alt="Adidadidadas Logo" class="h-12 w-auto rounded-lg border-2 border-white shadow-lg">';
+                        }
+                        ?>
+                        <h1 class="text-3xl font-bold text-white">Adidadidadas</h1>
+                    </div>
+                </div>
+                
+                <!--  nag add user action and icon para sa cart button -->
+                <div class="flex items-center gap-4">
+                    <a href="cart.php" class="relative bg-white text-purple-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
+                        <i class="fas fa-shopping-cart"></i>
+                        Cart
+                        <span class="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                            <?php echo count($cartItems); ?>
+                        </span>
+                    </a>
+                    
                     <?php if (!isset($_SESSION['user_id'])): ?>
-                    <div class="bg-blue-500 rounded px-4 py-2">
-                        <a href="login.html" class="text-white">Login</a>
-                    </div>
+                    <!-- login button -->
+                    <a href="login.html" class="bg-white text-purple-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
+                        <i class="fas fa-user"></i>
+                        Login
+                    </a>
                     <?php else: ?>
-                    <div class="bg-blue-500 rounded px-4 py-2">
-                        <a href="logout.php" class="text-white">Logout</a>
-                    </div>
+                    <!--  Logout button  -->
+                    <a href="logout.php" class="bg-white text-purple-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
+    </header>
 
-        <!-- Main Content -->
-        <div class="max-w-6xl mx-auto p-4">
-            <h2 class="text-3xl font-bold mb-6">Shopping Cart</h2>
+    <!-- Main Content  gi-improve ang layout ug design -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- gepadak'an ang header -->
+            <div class="mb-8">
+                <h2 class="text-4xl font-bold text-gray-800 mb-2 flex items-center gap-3">
+                    <i class="fas fa-shopping-cart text-purple-600"></i>
+                    Shopping Cart
+                </h2>
+                <p class="text-gray-600">
+                    Review your items and proceed to checkout
+                </p>
+            </div>
 
             <?php if (count($cartItems) === 0): ?>
-                <div class="bg-white rounded-lg shadow p-8 text-center">
-                    <p class="text-xl text-gray-600 mb-4">Your cart is empty</p>
-                    <a href="<?php echo $backUrl; ?>" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
-                        Continue Shopping
-                    </a>
-                </div>
-            <?php else: ?>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                    <!-- Cart Items -->
-                    <div class="lg:col-span-2">
-                        <div class="bg-white rounded-lg shadow overflow-x-auto">
-                            <table class="w-full text-sm sm:text-base">
-                                <thead class="bg-gray-200">
-                                    <tr>
-                                        <th class="px-2 sm:px-4 py-3 text-left">Product</th>
-                                        <th class="px-2 sm:px-4 py-3 text-center">Price</th>
-                                        <th class="px-2 sm:px-4 py-3 text-center">Qty</th>
-                                        <th class="px-2 sm:px-4 py-3 text-center">Subtotal</th>
-                                        <th class="px-2 sm:px-4 py-3 text-center">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($cartItems as $product_id => $item): 
-                                        $subtotal = $item['price'] * $item['qty'];
-                                        $total += $subtotal;
-                                    ?>
-                                        <tr class="border-b border-gray-200 hover:bg-gray-50">
-                                            <td class="px-2 sm:px-4 py-3 font-semibold text-xs sm:text-base"><?php echo htmlspecialchars($item['name']); ?></td>
-                                            <td class="px-2 sm:px-4 py-3 text-center text-xs sm:text-base">₱<?php echo number_format($item['price'], 2); ?></td>
-                                            <td class="px-2 sm:px-4 py-3">
-                                                <div class="flex items-center justify-center gap-2">
-                                                    <button 
-                                                        class="bg-gray-300 px-3 py-2 sm:px-2 sm:py-1 rounded hover:bg-gray-400 text-sm" 
-                                                        onclick="updateQty(<?php echo $product_id; ?>, -1)">
-                                                        -
-                                                    </button>
-                                                    <span id="qty-<?php echo $product_id; ?>" class="w-6 sm:w-8 text-center text-sm">
-                                                        <?php echo $item['qty']; ?>
-                                                    </span>
-                                                    <button 
-                                                        class="bg-gray-300 px-3 py-2 sm:px-2 sm:py-1 rounded hover:bg-gray-400 text-sm" 
-                                                        onclick="updateQty(<?php echo $product_id; ?>, 1)">
-                                                        +
-                                                    </button>
-                                                </div>
-                                            </td>
-                                            <td class="px-2 sm:px-4 py-3 text-center font-semibold text-xs sm:text-base">
-                                                ₱<?php echo number_format($subtotal, 2); ?>
-                                            </td>
-                                            <td class="px-2 sm:px-4 py-3 text-center">
-                                                <button 
-                                                    class="text-red-500 hover:text-red-700 text-sm sm:text-base"
-                                                    onclick="removeFromCart(<?php echo $product_id; ?>)">
-                                                    🗑️
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
+                <!--  Empty cart design -->
+                <div class="bg-white rounded-2xl shadow-lg p-12 text-center border border-gray-100">
+                    <div class="max-w-md mx-auto">
+                        <div class="bg-purple-100 p-6 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-shopping-cart text-4xl text-purple-600"></i>
                         </div>
-                    </div>
-
-                    <!-- Order Summary -->
-                    <div class="bg-white rounded-lg shadow p-4 sm:p-6 h-fit">
-                        <h3 class="text-lg sm:text-xl font-bold mb-4">Order Summary</h3>
-                        
-                        <div class="space-y-2 sm:space-y-3 mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-gray-200 text-sm sm:text-base">
-                            <div class="flex justify-between text-gray-700">
-                                <span>Subtotal</span>
-                                <span class="font-semibold">₱<?php echo number_format($total, 2); ?></span>
-                            </div>
-                            <div class="flex justify-between text-gray-700">
-                                <span>Shipping</span>
-                                <span class="font-semibold">₱0.00</span>
-                            </div>
-                            <div class="flex justify-between text-gray-700">
-                                <span>Tax</span>
-                                <span class="font-semibold">₱0.00</span>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-between text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-                            <span>Total</span>
-                            <span>₱<?php echo number_format($total, 2); ?></span>
-                        </div>
-
-                        <button class="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition font-bold text-base sm:text-lg">
-                            <a href="checkout.php" class="w-full block">
-                                Proceed to Checkout
-                            </a>
-                        </button>
-
-                        <a href="<?php echo $backUrl; ?>" class="block w-full text-center mt-3 text-blue-500 hover:text-blue-600 border border-blue-500 py-2 rounded font-semibold text-sm sm:text-base">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Your cart is empty</h3>
+                        <p class="text-gray-600 mb-8">Looks like you haven't added any items to your cart yet.</p>
+                        <a href="<?php echo $backUrl; ?>" 
+                           class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-500 text-white px-8 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-600 hover:shadow-lg transition-all duration-300">
+                            <i class="fas fa-store"></i>
                             Continue Shopping
                         </a>
                     </div>
                 </div>
+            <?php else: ?>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- item section ge usab sa ai hahahah -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                                <i class="fas fa-list text-purple-600"></i>
+                                Cart Items (<?php echo count($cartItems); ?>)
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <?php foreach ($cartItems as $product_id => $item): 
+                                    $subtotal = $item['price'] * $item['qty'];
+                                    $total += $subtotal;
+                                ?>
+                                <div class="cart-item-card bg-gray-50 rounded-xl p-4 border border-gray-200">
+                                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                                        <!-- Nag add product image placeholder, optional pwede ra tanggalon -->
+                                        <div class="bg-white p-4 rounded-lg border border-gray-300 w-20 h-20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-box text-2xl text-gray-400"></i>
+                                        </div>
+                                        
+                                        <div class="flex-1">
+                                            <h4 class="font-bold text-gray-800 text-lg"><?php echo htmlspecialchars($item['name']); ?></h4>
+                                            <p class="text-gray-600 text-sm">Product ID: #<?php echo $product_id; ?></p>
+                                        </div>
+                                        
+                                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                                            <!-- Price -->
+                                            <div class="text-center">
+                                                <div class="text-sm text-gray-600">Price</div>
+                                                <div class="text-xl font-bold text-purple-600">₱<?php echo number_format($item['price'], 2); ?></div>
+                                            </div>
+                                            
+                                            <!--  Quantity controls -->
+                                            <div class="text-center">
+                                                <div class="text-sm text-gray-600 mb-2">Quantity</div>
+                                                <div class="flex items-center gap-2">
+                                                    <button 
+                                                        class="bg-gray-200 w-8 h-8 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
+                                                        onclick="updateQty(<?php echo $product_id; ?>, -1)">
+                                                        <i class="fas fa-minus text-gray-700"></i>
+                                                    </button>
+                                                    <span id="qty-<?php echo $product_id; ?>" class="w-10 text-center font-bold text-lg">
+                                                        <?php echo $item['qty']; ?>
+                                                    </span>
+                                                    <button 
+                                                        class="bg-gray-200 w-8 h-8 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
+                                                        onclick="updateQty(<?php echo $product_id; ?>, 1)">
+                                                        <i class="fas fa-plus text-gray-700"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Subtotal -->
+                                            <div class="text-center">
+                                                <div class="text-sm text-gray-600">Subtotal</div>
+                                                <div class="text-xl font-bold text-gray-800">₱<?php echo number_format($subtotal, 2); ?></div>
+                                            </div>
+                                            
+                                            <!-- Remove button -->
+                                            <button 
+                                                class="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition"
+                                                onclick="removeFromCart(<?php echo $product_id; ?>)">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--  Order Summary - gihimo nga card style -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 sticky top-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                                <i class="fas fa-receipt text-purple-600"></i>
+                                Order Summary
+                            </h3>
+                            
+                            <!--  Order details ge utro ang layout -->
+                            <div class="space-y-4 mb-6 pb-6 border-b border-gray-200">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Subtotal</span>
+                                    <span class="font-semibold text-gray-800">₱<?php echo number_format($total, 2); ?></span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Shipping</span>
+                                    <span class="font-semibold text-green-600">FREE</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Tax</span>
+                                    <span class="font-semibold text-gray-800">₱0.00</span>
+                                </div>
+                            </div>
+
+                            <!-- Total -ge highlight ra -->
+                            <div class="flex justify-between items-center mb-8">
+                                <span class="text-xl font-bold text-gray-800">Total</span>
+                                <span class="text-3xl font-bold text-purple-600">₱<?php echo number_format($total, 2); ?></span>
+                            </div>
+
+                            <!--  Checkout button - gradient  -->
+                            <a href="checkout.php" 
+                               class="block w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-4 rounded-xl font-bold text-lg hover:from-purple-700 hover:to-pink-600 hover:shadow-lg transition-all duration-300 text-center mb-4">
+                                <i class="fas fa-lock mr-2"></i>
+                                Proceed to Checkout
+                            </a>
+
+                            <!--  Continue shopping button -->
+                            <a href="<?php echo $backUrl; ?>" 
+                               class="block w-full text-center border-2 border-purple-600 text-purple-600 py-3 rounded-xl font-semibold hover:bg-purple-50 transition-all duration-300">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Continue Shopping
+                            </a>
+
+                            <!-- Nag add ug Payment methods info eme lang gud  -->
+                            <div class="mt-6 pt-6 border-t border-gray-200">
+                                <p class="text-sm text-gray-600 mb-2">We accept:</p>
+                                <div class="flex gap-3">
+                                    <div class="bg-gray-100 p-2 rounded">
+                                        <i class="fab fa-cc-visa text-blue-600"></i>
+                                    </div>
+                                    <div class="bg-gray-100 p-2 rounded">
+                                        <i class="fab fa-cc-mastercard text-red-600"></i>
+                                    </div>
+                                    <div class="bg-gray-100 p-2 rounded">
+                                        <i class="fas fa-university text-green-600"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <?php endif; ?>
         </div>
-    </div>
+    </main>
 
+    <!-- Nag add ug Footer  -->
+    <footer class="bg-gray-900 text-white mt-16">
+        <div class="container mx-auto px-4 py-8">
+            <div class="text-center">
+                <p class="text-gray-400">&copy; 2025 Adidadidadas. Premium footwear and apparel.</p>
+                <div class="flex justify-center gap-6 mt-4">
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- na usab JavaScript functions - parehas functionality ge usab sa ai hahahah -->
     <script>
         function updateQty(productId, delta) {
-            const newQty = Math.max(1, parseInt(document.getElementById('qty-' + productId).textContent) + delta);
+            const qtyElement = document.getElementById('qty-' + productId);
+            const currentQty = parseInt(qtyElement.textContent);
+            const newQty = Math.max(1, currentQty + delta);
+            
+            // nag add Visual feedback
+            qtyElement.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                qtyElement.style.transform = 'scale(1)';
+            }, 300);
             
             fetch('update_cart.php', {
                 method: 'POST',
@@ -172,7 +295,7 @@ $backUrl = isset($_SESSION['user_id']) ? 'dashboard.php' : 'index.php';
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('qty-' + productId).textContent = newQty;
+                    qtyElement.textContent = newQty;
                     location.reload(); // Reload to update totals
                 } else {
                     alert('Error: ' + data.error);
@@ -185,7 +308,7 @@ $backUrl = isset($_SESSION['user_id']) ? 'dashboard.php' : 'index.php';
         }
 
         function removeFromCart(productId) {
-            if (confirm('Remove this item from cart?')) {
+            if (confirm('Are you sure you want to remove this item from your cart?')) {
                 fetch('remove_from_cart.php', {
                     method: 'POST',
                     headers: {
@@ -198,6 +321,8 @@ $backUrl = isset($_SESSION['user_id']) ? 'dashboard.php' : 'index.php';
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        // Nag add ug Success notification
+                        alert('Item removed from cart successfully!');
                         location.reload();
                     } else {
                         alert('Error: ' + data.error);

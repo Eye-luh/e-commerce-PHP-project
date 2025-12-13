@@ -13,103 +13,216 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Dashboard</title>
+    <!-- GI ADD: Font Awesome icons para parehas sa index.php -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Dashboard - Adidadidadas</title>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Same gradient sa index.php */
+        }
+        .sidebar-btn {
+            transition: all 0.3s ease;
+        }
+        .sidebar-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Hover effect parehas sa index.php */
+        }
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            height: 8px;
+            width: 8px;
+            background-color: #ef4444;
+            border-radius: 50%;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gray-100 min-h-screen">
 
-    <div class="min-h-screen bg-gray-200 px-3 py-5 grid grid-cols-1 md:grid-cols-12 gap-4">
+     
+    <div class="min-h-screen grid grid-cols-1 lg:grid-cols-12 gap-0">
 
-        <?php include 'components/sidebar.php'; ?>
+        <!-- Ge change ang Sidebar design gihimo nga gradient ug naay icons -->
+        <!--from bg-gray-200, walay icons to gradient background with icons-->
+        
+        <div class="lg:col-span-2 bg-gradient-to-b from-purple-800 to-purple-900 text-white">
+            <div class="p-6">
+               
+                <div class="flex items-center gap-3 mb-10">
+                    <?php
+                    $logo_path = 'uploads/LOGO.png';
+                    if (file_exists($logo_path)) {
+                        echo '<img src="' . $logo_path . '" alt="Adidadidadas Logo" class="h-10 w-auto rounded-lg border-2 border-white shadow-lg">';
+                    }
+                    ?>
+                    <h1 class="text-xl font-bold">Adidadidadas</h1>
+                </div>
 
-        <div class="bg-gray-200 rounded-2xl col-span-1 md:col-span-10">
-            <!-- Search Bar -->
-            <div class="bg-white rounded-xl w-full p-4 mb-4">
-                <form method="GET" class="flex gap-2">
-                    <input 
-                        type="text" 
-                        name="search" 
-                        placeholder="Search products..." 
-                        value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>"
-                        class="flex-1 px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none text-base"
-                    >
-                    <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition font-semibold">
-                        Search
-                    </button>
-                    <?php if (isset($_GET['search']) && !empty($_GET['search'])): ?>
-                    <a href="dashboard.php" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition font-semibold">
-                        Clear
+                <!-- ge chaneg ang Navigation design nag add og icons ug hover effects -->
+                <nav class="space-y-2">
+                    <a href="dashboard.php" class="sidebar-btn flex items-center gap-3 px-4 py-3 rounded-lg bg-purple-700">
+                        <i class="fas fa-home text-lg"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="sidebar-btn flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-700/50">
+                        <i class="fas fa-box text-lg"></i>
+                        <span>Shop</span>
+                    </a>
+                    <a href="cart.php" class="sidebar-btn flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-700/50">
+                        <i class="fas fa-shopping-cart text-lg"></i>
+                        <span>Cart</span>
+                        <!-- Nag add ug Cart badge -->
+                        <span class="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </a>
+                    <?php if (isset($_SESSION['userType']) && strtolower($_SESSION['userType']) === 'admin'): ?>
+                    <a href="#" class="sidebar-btn flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-700/50">
+                        <i class="fas fa-cog text-lg"></i>
+                        <span>Settings</span>
                     </a>
                     <?php endif; ?>
-                </form>
+                    <a href="logout.php" class="sidebar-btn flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-600/20 mt-8">
+                        <i class="fas fa-sign-out-alt text-lg"></i>
+                        <span>Logout</span>
+                    </a>
+                </nav>
             </div>
+        </div>
 
-            <div class="bg-white h-20 rounded-xl w-full p-2 flex justify-between items-center">
-                <div class="ps-6 w-full">
-                    <span>Welcome back!</span>
-                    <?php
-                        if (isset($_SESSION['username'])) {
-                            echo '<h1 class="text-2xl font-bold text-blue-500">' . htmlspecialchars($_SESSION['username']) . '</h1>';
-                        }
-                    ?>
-                </div>
-
-                <div class="flex justify-end items-center w-full p-4">
-                    <div class="flex justify-center items-center gap-4">
-                        <button class="border-2 border-blue-500 p-2 rounded-3xl">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>
-                            </svg>
-                        </button>
-
-                        <button class="border-2 border-blue-500 p-2 rounded-3xl">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                        </button>
+        <!-- Main Content -->
+        <div class="lg:col-span-10 p-6">
+            <!-- ge change ang Top Bar design -->
+            <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <!-- Welcome section  -->
+                    <div class="flex-1">
+                        <div class="text-gray-600">Welcome back!</div>
+                        <h1 class="text-2xl font-bold text-gray-800">
+                            <?php
+                                if (isset($_SESSION['username'])) {
+                                    echo htmlspecialchars($_SESSION['username']);
+                                }
+                            ?>
+                        </h1>
                     </div>
 
-                    <div class="p-4 flex gap-2 items-center max-w-xs sm:max-w-sm md:max-w-md overflow-hidden">
-                        <h1 class="text-3xl text-gray-400">|</h1>
-                        <?php
-                            if (isset($_SESSION['userType'])) {
-                                echo '<div class="flex items-center gap-1 truncate">
-                                        <h1 class="text-2xl text-gray-400 pt-1 truncate">' . htmlspecialchars($_SESSION['userType']) . '</h1>
-                                      </div>';
-                            }
-                        ?>
+                    <!-- ge change ang Search Bar -->
+                    <!-- Input with search icon ug gradient button -->
+                    <div class="flex-1 max-w-xl">
+                        <form method="GET" class="relative">
+                            <input 
+                                type="text" 
+                                name="search" 
+                                placeholder="Search products..." 
+                                value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>"
+                                class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-50 text-gray-800 transition duration-300"
+                            >
+                            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <button type="submit" class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-1.5 rounded-lg hover:from-purple-700 hover:to-pink-600 transition-all duration-300 text-sm font-medium">
+                                Search
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- ge change ang  User Actions area  -->
+                    <div class="flex items-center gap-4">
+            
+                        <a href="cart.php" class="relative bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 hover:from-purple-700 hover:to-pink-600 transition-all duration-300">
+                            <i class="fas fa-shopping-cart"></i>
+                            Cart
+                            <span class="bg-white text-purple-600 text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                        </a>
+
+                        <!-- ge change ang Notification button nag add og icon -->
+                        
+                        <button class="relative p-3 rounded-full hover:bg-gray-100 transition">
+                            <i class="fas fa-bell text-gray-600 text-xl"></i>
+                            <span class="notification-badge"></span>
+                        </button>
+
+                        
+                        <!-- ge change into  Avatar circle with user initial ang user info-->
+                        <div class="flex items-center gap-3">
+                            <div class="h-10 w-10 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+                                <?php
+                                    if (isset($_SESSION['username'])) {
+                                        echo strtoupper(substr(htmlspecialchars($_SESSION['username']), 0, 1));
+                                    }
+                                ?>
+                            </div>
+                            <div class="hidden md:block">
+                                <div class="font-medium text-gray-800"><?php echo htmlspecialchars($_SESSION['username'] ?? ''); ?></div>
+                                <div class="text-sm text-purple-600 font-medium"><?php echo htmlspecialchars($_SESSION['userType'] ?? ''); ?></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Clear Search -->
+                <?php if (isset($_GET['search']) && !empty($_GET['search'])): ?>
+                <div class="mt-4 flex justify-end">
+                    <a href="dashboard.php" class="inline-flex items-center gap-2 text-sm text-purple-600 hover:text-purple-800 font-medium">
+                        <i class="fas fa-times"></i>
+                        Clear Search
+                    </a>
+                </div>
+                <?php endif; ?>
             </div>
 
-            <!-- ADMIN STATS (only visible to admins) -->
+            <!-- ADMIN STATS cards nag add og icons ug hover effects -->
+
             <?php if (isset($_SESSION['userType']) && strtolower($_SESSION['userType']) === 'admin'): ?>
-            <div class="w-full py-4 mt-4 rounded-xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <div class="w-full bg-white rounded-xl p-4">
-                    <h1 class="text-xl font-semibold">Total Products</h1>
-                    <h1 class="text-4xl text-blue-400 font-semibold">120,000</h1>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="stat-card bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm text-gray-600 font-medium">Total Products</div>
+                            <div class="text-3xl font-bold text-gray-800 mt-2">120,000</div>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-full">
+                            <i class="fas fa-box text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="w-full bg-white rounded-xl p-4">
-                    <h1 class="text-xl font-semibold">Total Products Sold</h1>
-                    <h1 class="text-4xl text-blue-400 font-semibold">15000</h1>
+                <div class="stat-card bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm text-gray-600 font-medium">Products Sold</div>
+                            <div class="text-3xl font-bold text-gray-800 mt-2">15,000</div>
+                        </div>
+                        <div class="bg-green-50 p-3 rounded-full">
+                            <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="w-full bg-white rounded-xl p-4">
-                    <h1 class="text-2xl font-semibold">Total Sales</h1>
-                    <h1 class="text-4xl text-blue-400 flex items-center font-semibold">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke-width="1.5" stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.31m5.582 3.531A9 9 0 1 1 12 3a9 9 0 0 1 9 9Z" />
-                        </svg>
-                        500,000.00
-                    </h1>
+                <div class="stat-card bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm text-gray-600 font-medium">Total Sales</div>
+                            <div class="text-3xl font-bold text-gray-800 mt-2">₱500,000</div>
+                        </div>
+                        <div class="bg-purple-50 p-3 rounded-full">
+                            <i class="fas fa-coins text-purple-600 text-xl"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
             <?php endif; ?>
 
-            <div id="contentArea" class="w-full max-w-14xl p-4 mx-auto">
-                <div class="w-full max-w-6xl p-4 mx-auto">
-                    <h2 class="text-2xl font-bold mb-4 text-gray-800">
+            <!--ge change Main content area nag gi-add og border ug shadow -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <!-- Title -->
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">
                         <?php 
                             $title = (isset($_SESSION['userType']) && strtolower($_SESSION['userType']) === 'admin') ? 'Manage Products' : 'Shop Now';
                             if (isset($_GET['search']) && !empty($_GET['search'])) {
@@ -118,6 +231,19 @@
                             echo $title;
                         ?>
                     </h2>
+                    <p class="text-gray-600">
+                        <?php
+                            if (isset($_SESSION['userType']) && strtolower($_SESSION['userType']) === 'admin') {
+                                echo 'Manage your products and inventory';
+                            } else {
+                                echo 'Browse our latest collection';
+                            }
+                        ?>
+                    </p>
+                </div>
+
+                <!-- Product Grid-->
+                <div id="contentArea">
                     <?php
                         $limit = isset($_SESSION['userType']) && strtolower($_SESSION['userType']) === 'admin' ? 4 : null;
                         $show_actions = isset($_SESSION['userType']) && strtolower($_SESSION['userType']) === 'admin' ? true : false;
@@ -126,14 +252,42 @@
                         include 'components/product_grid.php';
                     ?>
                 </div>
+
+                <!-- Nag add ug View All Button para sa non-admin users -->
+                <?php if (isset($_SESSION['userType']) && strtolower($_SESSION['userType']) !== 'admin'): ?>
+                <div class="mt-8 text-center">
+                    <a href="index.php" class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-600 transition-all duration-300">
+                        <i class="fas fa-store"></i>
+                        View All Products
+                    </a>
+                </div>
+                <?php endif; ?>
             </div>
 
+            <!-- Nag add ug Footer -->
+            <footer class="bg-gray-900 text-white mt-12 pt-8 pb-8">
+                <div class="container mx-auto px-4">
+                    <div class="text-center">
+                        <p class="text-gray-400">&copy; 2025 Adidadidadas. Premium footwear and apparel.</p>
+                        <div class="flex justify-center gap-6 mt-4">
+                            <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
-
     </div>
 
+    <!-- Nag add  ug Notification system parehas sa index.php -->
     <script>
         function addToCart(productId) {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            button.disabled = true;
+            
             fetch('add_to_cart.php', {
                 method: 'POST',
                 headers: {
@@ -147,15 +301,43 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Product added to cart! (Qty: ' + data.item_qty + ')');
+                    // nag add ug Notification parehas sa index.php
+                    showNotification('Product added to cart!', 'success');
+                    // Update ang cart badges
+                    const cartBadges = document.querySelectorAll('.bg-red-500, .bg-white.text-purple-600');
+                    cartBadges.forEach(badge => {
+                        const currentCount = parseInt(badge.textContent) || 0;
+                        badge.textContent = currentCount + 1;
+                    });
                 } else {
-                    alert('Error: ' + data.error);
+                    showNotification('Error: ' + data.error, 'error');
                 }
+                button.innerHTML = originalText;
+                button.disabled = false;
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Failed to add product to cart');
+                showNotification('Failed to add product to cart', 'error');
+                button.innerHTML = originalText;
+                button.disabled = false;
             });
+        }
+        
+        // nag add Notification function parehas sa index.php
+        function showNotification(message, type) {
+            // 
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transform transition-transform duration-300 ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Mawa human sa 3 seconds (Removes after 3 seconds)
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
     </script>
 </body>
