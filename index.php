@@ -1,5 +1,6 @@
 <?php
     include 'connection.php';
+    session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,25 +31,33 @@
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 ">
     <!-- Ge Modified ang Header   -->
-    <header class="gradient-bg shadow-lg">
+    <header class="gradient-bg shadow-lg ">
         <div class="container mx-auto px-4 py-6">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex  md:flex-row justify-between mr-10 ml-6 items-center gap-6">
                 
-                <div class="flex items-center gap-3">
-                
-                <?php
-                $logo_path = 'uploads/LOGO.png';
-                if (file_exists($logo_path)) {
-                    echo '<img src="' . $logo_path . '" alt="Adidadidadas Logo" class="h-12 w-auto rounded-lg border-2 border-white shadow-lg">';
-                }
-                ?>
-                <h1 class="text-3xl md:text-4xl font-bold text-white">Adidadidadas</h1>
-            </div>
+                <div class="hidden lg:block">
+                    
+                    <div class="flex items-center gap-3">
+                        <?php
+                        $logo_path = 'uploads/LOGO.png';
+                        if (file_exists($logo_path)) {
+                            echo '<img src="' . $logo_path . '" alt="Adidadidadas Logo" class="h-12 w-auto rounded-lg border-2 border-white shadow-lg">';
+                        }
+                        ?>
+                        <h1 class="text-3xl  md:text-4xl font-bold text-white">Adidadidadas</h1>
+                    </div>
+                </div>
+                <!-- mobile view menu bar -->
+                 <div class="block md:hidden w-10 flex justify-end ">
+                        <button class="text-white btn-menu">
+                           <i class="fa-solid fa-bars text-4xl "></i>
+                        </button>
+                </div>
                 
                 <!-- ge change ang design sa Search bar ge addan  icon-->
-                <div class="relative w-full md:w-96">
+                <div class="relative mx-auto  w-full  md:w-96">
                     <input 
                         class="w-full p-4 pl-12 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                         type="text" 
@@ -58,18 +67,57 @@
                 </div>
                 
                 <!-- ge change ang mga buttons nag add  og icons ug cart badge -->
-                <div class="flex gap-4">
-                    <a href="cart.php" class="relative bg-white text-purple-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
-                        <i class="fas fa-shopping-cart"></i>
-                        Cart
-                        <span class="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
-                    </a>
-                    <a href="login.html" class="bg-white text-purple-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
+                 <!-- desktop view -->
+                <div class=" hidden lg:block ">
+                   <div class="flex">
+                    <?php if(isset($_SESSION['user_id'])) : ?>
+                       
+                        
+                        <a href="dashboard.php?content=cart" class=" bg-white text-purple-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
+                            <i class="fas fa-shopping-cart"></i>
+                            Cart
+                            <span class="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                        </a>
+                    <?php endif ; ?>
+                     <?php if(isset($_SESSION['user_id'])) :?>
+                        <a href="dashboard.php" class="bg-white ml-12 text-purple-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
+                            <i class="fas fa-user"></i>
+                            back to dashboard
+                        </a>
+                    <?php else : ?>
+                         <a href="login.php" class="bg-white ml-12 text-purple-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
                         <i class="fas fa-user"></i>
-                        Account
+                        Login/Create
                     </a>
+                    <?php endif ;?>
+                    </div>
                 </div>
+               
             </div>
+            <!-- mobile view  -->
+            <div class="flex flex-col gap-4 mt-4 hidden mobilebox transition-opacity duration-500 delay-200 ease-in-out">
+               <?php if(isset($_SESSION['user_id'])) : ?>
+                       
+                        
+                        <a href="dashboard.php?content=cart" class=" bg-white text-purple-600 px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
+                            <i class="fas fa-shopping-cart"></i>
+                            Cart
+                            <span class="bg-red-500 text-white text-xs rounded-xl h-5 w-5 flex items-center justify-center">0</span>
+                        </a>
+                    <?php endif ; ?>
+                     <?php if(isset($_SESSION['user_id'])) :?>
+                        <a href="dashboard.php" class="bg-white  text-purple-600 px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
+                            <i class="fas fa-user"></i>
+                            back to dashboard
+                        </a>
+                    <?php else : ?>
+                         <a href="login.html" class="bg-white  text-purple-600 px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
+                        <i class="fas fa-user"></i>
+                        Login/Create
+                    </a>
+                    <?php endif ;?>
+            </div>
+
         </div>
     </header>
 
@@ -97,7 +145,7 @@
     </nav>
 
     <!-- Nag add Hero banner section  para sa promotions -->
-    <section class="container mx-auto px-4 py-8">
+    <section class="container mx-auto px-4 py-8 ">
         <div class="bg-gradient-to-r from-purple-600 to-pink-500 rounded-2xl shadow-2xl p-8 text-white">
             <div class="max-w-xl">
                 <h2 class="text-4xl md:text-5xl font-bold mb-4">Limited Edition Drops</h2>
@@ -180,12 +228,30 @@
     </footer>
 
     <script>
-        function addToCart(productId) {
-            // nag dugang ug murag mo hover 
-            const button = event.target;
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
-            button.disabled = true;
+
+            const btnmenu = document.querySelector('.btn-menu');
+            const mobilebox = document.querySelector('.mobilebox');
+            btnmenu.addEventListener('click',(e)=>{
+
+                e.preventDefault();
+                mobilebox.classList.toggle('opacity-0');
+                mobilebox.classList.toggle('hidden');
+                mobilebox.classList.toggle('opacity-100')
+            })
+
+
+
+
+        function addToCart(productId, button) {
+            // Use passed button element when available (sa inline onclick we pass `this`)
+            if (!button) {
+                button = (typeof event !== 'undefined' && event.target) ? event.target : null;
+            }
+            const originalText = button ? button.innerHTML : 'Adding...';
+            if (button) {
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+                button.disabled = true;
+            }
             
             fetch('add_to_cart.php', {
                 method: 'POST',
@@ -197,28 +263,46 @@
                     qty: 1
                 })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Nag add ug Notification nga na add na ang product sa cart
+            .then(response => response.text())
+            .then(text => {
+                // Try to parse JSON; if parsing fails, log the full response for debugging
+                let data = null;
+                try {
+                    data = JSON.parse(text);
+                } catch (err) {
+                    console.error('Non-JSON response from add_to_cart.php:', text);
+                    showNotification('Server error while adding to cart (see console)', 'error');
+                    if (button) {
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    }
+                    return;
+                }
+
+                if (data && data.success) {
                     showNotification('Product added to cart!', 'success');
-                    // Update ang cart badge 
                     const cartBadge = document.querySelector('.bg-red-500');
                     if (cartBadge) {
                         const currentCount = parseInt(cartBadge.textContent) || 0;
                         cartBadge.textContent = currentCount + 1;
                     }
                 } else {
-                    showNotification('Error: ' + data.error, 'error');
+                    console.error('add_to_cart error response:', data);
+                    showNotification('Error: ' + (data.error || 'Unknown error'), 'error');
                 }
-                button.innerHTML = originalText;
-                button.disabled = false;
+
+                if (button) {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
             })
             .catch(error => {
-                console.error('Error:', error);
-                showNotification('Failed to add product to cart', 'error');
-                button.innerHTML = originalText;
-                button.disabled = false;
+                console.error('Fetch error adding to cart:', error);
+                showNotification('Network error while adding to cart', 'error');
+                if (button) {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
             });
         }
         

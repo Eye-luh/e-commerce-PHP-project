@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Oct 27, 2025 at 07:07 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Host: localhost:3306
+-- Generation Time: Dec 14, 2025 at 04:53 PM
+-- Server version: 8.4.3
+-- PHP Version: 8.3.16
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,9 +28,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `tbl_categories` (
-  `category_id` int(11) NOT NULL,
-  `categoryName` varchar(250) DEFAULT NULL,
-  `categoryDesc` text DEFAULT NULL
+  `category_id` int NOT NULL,
+  `categoryName` varchar(250) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `categoryDesc` text COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -56,16 +56,66 @@ INSERT INTO `tbl_categories` (`category_id`, `categoryName`, `categoryDesc`) VAL
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_customers`
+--
+
+CREATE TABLE `tbl_customers` (
+  `customerID` int NOT NULL,
+  `fullname` varchar(250) NOT NULL,
+  `email` varchar(250) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `address` varchar(250) NOT NULL,
+  `bday` date DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `tbl_customers`
+--
+
+INSERT INTO `tbl_customers` (`customerID`, `fullname`, `email`, `phone`, `address`, `bday`, `user_id`, `created_at`) VALUES
+(1, 'Rejallejon', 'RMRUFIN@gmail.com', '09123123123', '', '2025-12-24', 8, '2025-12-14 11:23:58');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_orders`
+--
+
+CREATE TABLE `tbl_orders` (
+  `order_id` int NOT NULL,
+  `customerID` int DEFAULT NULL,
+  `product_id` int DEFAULT NULL,
+  `quantity` int NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `added_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` enum('active','purchased','removed') DEFAULT 'active',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `tbl_orders`
+--
+
+INSERT INTO `tbl_orders` (`order_id`, `customerID`, `product_id`, `quantity`, `price`, `added_at`, `status`, `updated_at`) VALUES
+(6, 1, 19, 1, 5000.00, '2025-12-14 11:59:32', 'active', '2025-12-14 11:59:32'),
+(7, 1, 18, 1, 5000.00, '2025-12-14 12:00:58', 'removed', '2025-12-14 12:00:58'),
+(8, 1, 13, 1, 10000.00, '2025-12-14 12:33:16', 'active', '2025-12-14 12:33:16');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_products`
 --
 
 CREATE TABLE `tbl_products` (
-  `product_id` int(11) NOT NULL,
-  `product_name` varchar(250) DEFAULT NULL,
+  `product_id` int NOT NULL,
+  `product_name` varchar(250) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `price` decimal(10,2) DEFAULT NULL,
-  `quantity` int(11) DEFAULT NULL,
-  `category_id` int(11) DEFAULT NULL,
-  `image_path` varchar(255) NOT NULL
+  `quantity` int DEFAULT NULL,
+  `category_id` int DEFAULT NULL,
+  `image_path` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -89,11 +139,11 @@ INSERT INTO `tbl_products` (`product_id`, `product_name`, `price`, `quantity`, `
 --
 
 CREATE TABLE `tbl_user` (
-  `user_id` int(11) NOT NULL,
-  `userName` varchar(255) NOT NULL,
-  `email` varchar(250) NOT NULL,
-  `userPassword` varchar(250) DEFAULT NULL,
-  `userType` varchar(255) NOT NULL
+  `user_id` int NOT NULL,
+  `userName` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(250) COLLATE utf8mb4_general_ci NOT NULL,
+  `userPassword` varchar(250) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `userType` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -104,7 +154,9 @@ INSERT INTO `tbl_user` (`user_id`, `userName`, `email`, `userPassword`, `userTyp
 (2, 'eds', 'eds@gmail.com', '$2y$10$iCv.kAL8.a90OlXIE7Fitu89wVMgegiy0cDUliKCla/kr.SbAfaj2', 'Admin'),
 (3, 'hello', 'hello@gmail.com', '$2y$10$LWGR2Jpk.G6KUWMGfbduCeZiKOLrkA7kqt1X0fBY8Jc8KQxNnIV5C', 'Staff'),
 (4, 'PinakaAdmin', 'admin@gmail.com', '$2y$10$Ukp.4hvr.3iL.2XH5gLaqey20Hd2ByxzjOLkiLBGL53KY43Q1oTrC', 'Admin'),
-(5, 'uwuStaff', 'student@gmail.com', '$2y$10$UjpTKp4WALQf8Afs0LqcV.hyoGFfyqd9wJ43YfdvRDOWj3yg.2U/q', 'Staff');
+(5, 'uwuStaff', 'student@gmail.com', '$2y$10$UjpTKp4WALQf8Afs0LqcV.hyoGFfyqd9wJ43YfdvRDOWj3yg.2U/q', 'Staff'),
+(7, 'uwu', 'uwu@gmail.com', '$2y$10$NnXXgWD4Tjug71Cq11PimeEsVSN2EGItXvZ.vX1YhtxAA4ng3UHpC', 'Customer'),
+(8, 'RMRUFIN', 'RMRUFIN@gmail.com', '$2y$10$f2r60DmS9pawHxQyDcRkTOKYzIza0EGD3/TJBvO5fKWm2KgYyla9.', 'Customer');
 
 --
 -- Indexes for dumped tables
@@ -115,6 +167,21 @@ INSERT INTO `tbl_user` (`user_id`, `userName`, `email`, `userPassword`, `userTyp
 --
 ALTER TABLE `tbl_categories`
   ADD PRIMARY KEY (`category_id`);
+
+--
+-- Indexes for table `tbl_customers`
+--
+ALTER TABLE `tbl_customers`
+  ADD PRIMARY KEY (`customerID`),
+  ADD KEY `fk_users` (`user_id`);
+
+--
+-- Indexes for table `tbl_orders`
+--
+ALTER TABLE `tbl_orders`
+  ADD PRIMARY KEY (`order_id`),
+  ADD KEY `fk_customer` (`customerID`),
+  ADD KEY `fk_product` (`product_id`);
 
 --
 -- Indexes for table `tbl_products`
@@ -137,23 +204,48 @@ ALTER TABLE `tbl_user`
 -- AUTO_INCREMENT for table `tbl_categories`
 --
 ALTER TABLE `tbl_categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `category_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT for table `tbl_customers`
+--
+ALTER TABLE `tbl_customers`
+  MODIFY `customerID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tbl_orders`
+--
+ALTER TABLE `tbl_orders`
+  MODIFY `order_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tbl_products`
 --
 ALTER TABLE `tbl_products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `tbl_customers`
+--
+ALTER TABLE `tbl_customers`
+  ADD CONSTRAINT `fk_users` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tbl_orders`
+--
+ALTER TABLE `tbl_orders`
+  ADD CONSTRAINT `fk_customer` FOREIGN KEY (`customerID`) REFERENCES `tbl_customers` (`customerID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_product` FOREIGN KEY (`product_id`) REFERENCES `tbl_products` (`product_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tbl_products`

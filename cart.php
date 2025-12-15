@@ -1,13 +1,61 @@
 <?php
-session_start();
-include 'connection.php';
 
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = [];
+
+include 'connection.php';
+if(!isset($_SESSION['user_id'])){
+ 
+    header('Location: index.php');
+    
+    exit;
 }
 
-$cartItems = $_SESSION['cart'];
+$cartItems = [];
 $total = 0;
+
+// If user is logged in, load cart from tbl_orders; otherwise fallback to session cart
+if (isset($_SESSION['user_id'])) {
+    $uid = intval($_SESSION['user_id']);
+    // detect column name and resolve value
+    $user_col = 'user_id';
+    $colCheck = mysqli_query($conn, "SHOW COLUMNS FROM tbl_orders LIKE 'customerID'");
+    if ($colCheck && mysqli_num_rows($colCheck) > 0) {
+        $user_col = 'customerID';
+    }
+    $user_val = $uid;
+    if ($user_col === 'customerID') {
+        if (isset($_SESSION['customerID']) && intval($_SESSION['customerID']) > 0) {
+            $user_val = intval($_SESSION['customerID']);
+        } else {
+            $custRes = mysqli_query($conn, "SELECT customerID FROM tbl_customers WHERE user_id = " . $uid . " LIMIT 1");
+            if ($custRes && mysqli_num_rows($custRes) > 0) {
+                $crow = mysqli_fetch_assoc($custRes);
+                $user_val = intval($crow['customerID']);
+                $_SESSION['customerID'] = $user_val;
+            }
+        }
+    }
+    $sql = "SELECT o.order_id, o.product_id, o.quantity, o.price, p.product_name FROM tbl_orders o LEFT JOIN tbl_products p ON o.product_id = p.product_id WHERE o.$user_col = ? AND o.status = 'active'";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $user_val);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($res) {
+            while ($r = $res->fetch_assoc()) {
+            $pid = intval($r['product_id']);
+            $cartItems[$pid] = [
+                'qty' => intval($r['quantity']),
+                'price' => floatval($r['price']),
+                'name' => $r['product_name'] ?? 'Product',
+                'order_id' => $r['order_id']
+            ];
+        }
+    }
+} else {
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
+    $cartItems = $_SESSION['cart'];
+}
 
 // mag determine kung asa siya na page mo direct after logged, mag depende sa iya role
 $backUrl = isset($_SESSION['user_id']) ? 'dashboard.php' : 'index.php';
@@ -35,55 +83,7 @@ $backUrl = isset($_SESSION['user_id']) ? 'dashboard.php' : 'index.php';
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!--  Header design - gihimo nga gradient -->
-    <!-- From gray bg karun gradient background with icons, (ug bati utruha lang() -->
-    <header class="gradient-bg shadow-lg">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-                
-                <div class="flex items-center gap-4">
-                    <a href="<?php echo $backUrl; ?>" class="text-white hover:text-gray-200 font-medium flex items-center gap-2">
-                        <i class="fas fa-arrow-left"></i>
-                        Back to <?php echo isset($_SESSION['user_id']) ? 'Dashboard' : 'Shop'; ?>
-                    </a>
-                    <div class="flex items-center gap-3">
-                        <?php
-                        $logo_path = 'uploads/LOGO.png';
-                        if (file_exists($logo_path)) {
-                            echo '<img src="' . $logo_path . '" alt="Adidadidadas Logo" class="h-12 w-auto rounded-lg border-2 border-white shadow-lg">';
-                        }
-                        ?>
-                        <h1 class="text-3xl font-bold text-white">Adidadidadas</h1>
-                    </div>
-                </div>
-                
-                <!--  nag add user action and icon para sa cart button -->
-                <div class="flex items-center gap-4">
-                    <a href="cart.php" class="relative bg-white text-purple-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
-                        <i class="fas fa-shopping-cart"></i>
-                        Cart
-                        <span class="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                            <?php echo count($cartItems); ?>
-                        </span>
-                    </a>
-                    
-                    <?php if (!isset($_SESSION['user_id'])): ?>
-                    <!-- login button -->
-                    <a href="login.html" class="bg-white text-purple-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
-                        <i class="fas fa-user"></i>
-                        Login
-                    </a>
-                    <?php else: ?>
-                    <!--  Logout button  -->
-                    <a href="logout.php" class="bg-white text-purple-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
-                    </a>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </header>
+    
 
     <!-- Main Content  gi-improve ang layout ug design -->
     <main class="container mx-auto px-4 py-8">
@@ -255,19 +255,7 @@ $backUrl = isset($_SESSION['user_id']) ? 'dashboard.php' : 'index.php';
         </div>
     </main>
 
-    <!-- Nag add ug Footer  -->
-    <footer class="bg-gray-900 text-white mt-16">
-        <div class="container mx-auto px-4 py-8">
-            <div class="text-center">
-                <p class="text-gray-400">&copy; 2025 Adidadidadas. Premium footwear and apparel.</p>
-                <div class="flex justify-center gap-6 mt-4">
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
+   
 
     <!-- na usab JavaScript functions - parehas functionality ge usab sa ai hahahah -->
     <script>
