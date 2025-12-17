@@ -1,39 +1,48 @@
 <?php
 
-    session_start();
+include 'connection.php';
 
-    include 'connection.php';
+session_start();
 
-    if (!isset($_SESSION['user_id'])) {
-    header("Location: login.html");
-    exit();
-}
+// Siguroha nga naay ID nga gi-pasa
 
-    if (isset($_SESSION['userType']) && strtolower($_SESSION['userType']) !== 'admin') {
-    header("Location: dashboard.php");
-    exit();
-}
+if (isset($_GET['id'])) {
 
-    if(isset($_GET['id'])){
-        $product_id = $_GET['id'];
+    $id = $_GET['id'];
 
-        $sql = "DELETE FROM tbl_products WHERE product_id = ?";
+    // 1. (Optional) Kuhaon ang image path para ma-delete sad ang file sa folder
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i",$product_id);
+    $sql_get = "SELECT image_path FROM tbl_products WHERE product_id = ?";
 
-        if ($stmt->execute()) {
-           
-            header('Location: dashboard.php');
-            exit();
-        } 
+    $stmt_get = $conn->prepare($sql_get);
 
-        $stmt->close();
+    $stmt_get->bind_param("i", $id);
 
+    $stmt_get->execute();
+
+    $result = $stmt_get->get_result();
+
+    if ($row = $result->fetch_assoc()) {
+
+        if (file_exists($row['image_path'])) {
+
+            unlink($row['image_path']); // Tangtangon ang file sa 'uploads' folder
+        }
     }
+    // 2. I-delete ang record sa database
 
-    $conn->close();
+    $sql_del = "DELETE FROM tbl_products WHERE product_id = ?";
 
+    $stmt_del = $conn->prepare($sql_del);
 
+    $stmt_del->bind_param("i", $id);
 
+    if ($stmt_del->execute()) {
+
+        echo "<script>alert('Product deleted successfully!'); window.location='dashboard.php?content=manage_product';</script>";
+
+    } else {
+        echo "<script>alert('Error deleting product.'); window.location='dashboard.php?content=manage_product';</script>";
+    }
+}
 ?>
