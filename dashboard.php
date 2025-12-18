@@ -87,7 +87,7 @@
                         <a href="?content=editprofile" class="sidebar-btn flex items-center gap-3 px-4 py-3 rounded-lg <?php echo (isset($_GET['content']) && $_GET['content'] == 'editprofile') ? 'bg-purple-700 shadow-inner font-bold' : 'hover:bg-purple-700/50'; ?>">
                            <i class="fa-solid fa-pen-to-square text-lg"></i>
                             <span>Edit Profile</span>
-                        </a>
+                         </a>
                        
                     <?php endif; ?>
 

@@ -3,17 +3,20 @@
 ob_start(); 
 
 // 1. DATABASE CONNECTION
+// Siguroha nga ang 'connection.php' husto ang path aron dili mag-error ang query
 include 'connection.php';
 
-// I-set ang timezone sa Pilipinas para match ang date display
+// I-set ang timezone sa Pilipinas para match ang date display sa lokal nga oras
 date_default_timezone_set('Asia/Manila');
 
-// 2. SQL QUERY - Siguroha nga gi-select ang 'remarks'
+// 2. SQL QUERY 
+// Gikuha nato tanang columns gikan sa tbl_user_logs. 
+// Gi-order nato pinaagi sa pinakabag-o nga login (DESC) para makita dayon ang active sessions sa taas.
 $sql = "SELECT * FROM tbl_user_logs ORDER BY login_time DESC";
 $result = $conn->query($sql);
 ?>
 
-<div class="flex flex-col min-h-screen"> 
+<div class="flex flex-col min-h-screen bg-gray-50"> 
     
     <div class="p-6 flex-grow">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -54,12 +57,13 @@ $result = $conn->query($sql);
                             <?php while($row = $result->fetch_assoc()): ?>
                             <tr class="log-row hover:bg-purple-50/50 transition-colors">
                                 <td class="px-6 py-4 text-gray-400 font-mono text-xs">#<?php echo $row['log_id']; ?></td>
+                                
                                 <td class="px-6 py-4 font-semibold text-gray-900"><?php echo htmlspecialchars($row['username']); ?></td>
                                 
                                 <td class="px-6 py-4">
                                     <?php 
                                         $role = strtoupper($row['userType']);
-                                        $class = "bg-gray-100 text-gray-600 border-gray-200"; // Default
+                                        $class = "bg-gray-100 text-gray-600 border-gray-200"; 
                                         if ($role === 'ADMIN') $class = "bg-red-100 text-red-600 border-red-200";
                                         if ($role === 'STAFF') $class = "bg-blue-100 text-blue-600 border-blue-200";
                                         if ($role === 'CUSTOMER') $class = "bg-green-100 text-green-600 border-green-200";
@@ -76,17 +80,22 @@ $result = $conn->query($sql);
                                 
                                 <td class="px-6 py-4 text-gray-600 whitespace-nowrap">
                                     <?php 
-                                        if (!empty($row['logout_time'])) {
+                                        if (!empty($row['logout_time']) && $row['logout_time'] != '0000-00-00 00:00:00') {
                                             echo '<i class="fas fa-sign-out-alt mr-1.5 text-gray-300 text-xs"></i>';
                                             echo date('M d, Y | h:i A', strtotime($row['logout_time']));
                                         } else {
+                                            // Kon wala pay logout time, i-display ang dash
                                             echo '<span class="text-gray-300 italic">---</span>';
                                         }
                                     ?>
                                 </td>
 
                                 <td class="px-6 py-4">
-                                    <?php if (empty($row['logout_time'])): ?>
+                                    <?php 
+                                    // Ang 'status' mag-agad sa imong SQL Update kaganina (Online/Offline)
+                                    $currentStatus = $row['status']; 
+                                    ?>
+                                    <?php if ($currentStatus === 'Online' || $currentStatus === 'Logged In'): ?>
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-100">
                                             <span class="h-1.5 w-1.5 bg-green-500 rounded-full mr-2 animate-pulse"></span> Online
                                         </span>
@@ -102,10 +111,10 @@ $result = $conn->query($sql);
                                 </td>
 
                                 <td class="px-6 py-4 text-center whitespace-nowrap">
-                                    <a href="dashboard.php?content=edit_log&id=<?php echo $row['log_id']; ?>" class="text-blue-500 hover:text-blue-700 mr-3 transition">
+                                    <a href="dashboard.php?content=edit_log&id=<?php echo $row['log_id']; ?>" class="text-blue-500 hover:text-blue-700 mr-3 transition" title="Edit Log">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="delete_log.php?id=<?php echo $row['log_id']; ?>" onclick="return confirm('Are you sure?')" class="text-red-500 hover:text-red-700 transition">
+                                    <a href="delete_log.php?id=<?php echo $row['log_id']; ?>" onclick="return confirm('Are you sure you want to delete this log?')" class="text-red-500 hover:text-red-700 transition" title="Delete Log">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                 </td>
@@ -126,17 +135,20 @@ $result = $conn->query($sql);
             </div>
         </div>
     </div>
-
-
 </div>
 
 <script>
+/**
+ * SEARCH LOGS FUNCTION
+ * Gitugotan ang admin sa pag-filter sa table gamit ang username, role, o status.
+ */
 function searchLogs() {
     const filter = document.getElementById("logSearchInput").value.toLowerCase();
     const rows = document.getElementsByClassName("log-row");
 
     for (let i = 0; i < rows.length; i++) {
         const rowText = rows[i].innerText.toLowerCase();
+        // I-hide ang row kon ang search keyword wala sa sulod sa row text
         rows[i].style.display = rowText.includes(filter) ? "" : "none";
     }
 }

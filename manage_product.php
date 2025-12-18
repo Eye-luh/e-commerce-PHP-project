@@ -87,7 +87,7 @@ $result = $conn->query($sql);
                                 </a>
 
                                 <a href="delete_product.php?id=<?php echo $row['product_id']; ?>" 
-                                   onclick="return confirm('Sigurado ka nga gusto nimo papason kini nga produkto?')"
+                                   onclick="return confirm('Are you sure you want to delete this product?')"
                                    class="h-8 w-8 flex items-center justify-center text-red-500 bg-red-50 rounded-lg hover:bg-red-100 transition-all shadow-sm">
                                     <i class="fas fa-trash text-xs"></i>
                                 </a>

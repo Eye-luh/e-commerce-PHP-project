@@ -1,7 +1,5 @@
 <?php
-
 session_start();
-
 include 'connection.php';
 
 // echeck kung ang request kay POST method

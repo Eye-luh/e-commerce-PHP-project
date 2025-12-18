@@ -10,12 +10,11 @@ if (!isset($_SESSION['user_id'])) {
 
 $message = ""; 
 
-// 1. I-fetch ang mga Categories para sa Dropdown
 $categories_query = "SELECT * FROM tbl_categories ORDER BY categoryName ASC";
 $categories_result = $conn->query($categories_query);
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_product'])) {
-    $category_id = $_POST['category_id']; // Nakuha gikan sa dropdown
+    $category_id = $_POST['category_id']; 
     $product_name = $_POST['product_name'];
     $price = $_POST['price'];
     $quantity = $_POST['quantity'];
@@ -25,7 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_product'])) {
         mkdir($targetDir, 0777, true);
     }
 
-    // File Upload Logic
     $fileName = time() . "_" . basename($_FILES["p_image"]["name"]); 
     $targetFilePath = $targetDir . $fileName;
     $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
@@ -34,21 +32,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_product'])) {
     if (in_array(strtolower($fileType), $allowTypes)) {
         if (move_uploaded_file($_FILES["p_image"]["tmp_name"], $targetFilePath)) {
             
-            // 2. I-insert na lang diretso sa tbl_products gamit ang napili nga category_id
             $sql_product = "INSERT INTO tbl_products (product_name, price, quantity, image_path, category_id) VALUES (?, ?, ?, ?, ?)";
             $stmt_prod = $conn->prepare($sql_product);
             $stmt_prod->bind_param("sdiss", $product_name, $price, $quantity, $targetFilePath, $category_id); 
 
             if ($stmt_prod->execute()) {
-                $message = "Product added successfully!";
+                // KINI ANG REDIRECT LOGIC
+                echo "<script>
+                        alert('Product added successfully!');
+                        window.location.href='dashboard.php?content=manage_product';
+                      </script>";
+                exit();
             } else {
                 $message = "Product DB Error: " . $conn->error;
             }
         } else {
             $message = "Error uploading file.";
         }
+    } else {
+        $message = "Invalid file type. Only JPG, JPEG, PNG, & GIF are allowed.";
     }
-}
+} 
 ?>
 
 <div class="w-full max-w-5xl mx-auto py-8">
