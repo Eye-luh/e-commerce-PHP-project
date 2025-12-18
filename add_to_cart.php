@@ -1,7 +1,11 @@
 <?php
 session_start();
 include 'connection.php';
-
+if(!isset($_SESSION['user_id'])){
+    http_response_code(400);
+    echo json_encode(['error' => 'Please login first.']);
+    exit();
+}
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

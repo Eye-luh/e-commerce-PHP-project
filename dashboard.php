@@ -10,7 +10,7 @@
     }
 
     // 2. Pag-ihap sa tanang produkto (Dynamic)
-    $query = "SELECT COUNT(*) as total FROM products"; 
+    $query = "SELECT COUNT(*) as total FROM tbl_products"; 
     $result = mysqli_query($conn, $query);
     $totalProducts = 0;
     if ($result) {
@@ -40,9 +40,9 @@
 </head>
 <body class="bg-gray-100">
     
-    <div class="flex h-screen overflow-hidden"> 
+    <div class="grid grid-col-1 md:grid-col-3 h-screen overflow-hidden"> 
         
-        <div class="w-64 bg-gradient-to-b from-purple-800 to-purple-900 text-white flex flex-col fixed h-screen left-0 top-0 z-50">
+        <div class="w-64  hidden md:block bg-gradient-to-b from-purple-800 to-purple-900 text-white flex flex-col fixed h-screen left-0 top-0 z-50">
             <div class="p-6 flex-grow overflow-y-auto">
                 <div class="flex items-center gap-3 mb-10">
                     <img src="uploads/LOGO.png" alt="Logo" class="h-10 w-auto rounded-lg border-2 border-white shadow-lg" onerror="this.style.display='none'">
@@ -74,7 +74,20 @@
                             <i class="fas fa-tags text-lg"></i>
                             <span>Manage Categories</span>
                         </a>
+                    <?php else : ?>
 
+                         <a href="index.php" class="sidebar-btn flex items-center gap-3 px-4 py-3 rounded-lg <?php echo (isset($_GET['content']) && $_GET['content'] == 'manage_categories') ? 'bg-purple-700 shadow-inner font-bold' : 'hover:bg-purple-700/50'; ?>">
+                           <i class="fa-solid fa-cart-shopping text-lg  "></i>
+                            <span>Shop</span>
+                        </a>
+                        <a href="?content=viewcart" class="sidebar-btn flex items-center gap-3 px-4 py-3 rounded-lg <?php echo (isset($_GET['content']) && $_GET['content'] == 'viewcart') ? 'bg-purple-700 shadow-inner font-bold' : 'hover:bg-purple-700/50'; ?>">
+                           <i class="fa-solid fa-cart-shopping text-lg  "></i>
+                            <span>View Cart</span>
+                        </a>
+                        <a href="?content=editprofile" class="sidebar-btn flex items-center gap-3 px-4 py-3 rounded-lg <?php echo (isset($_GET['content']) && $_GET['content'] == 'editprofile') ? 'bg-purple-700 shadow-inner font-bold' : 'hover:bg-purple-700/50'; ?>">
+                           <i class="fa-solid fa-pen-to-square text-lg"></i>
+                            <span>Edit Profile</span>
+                        </a>
                        
                     <?php endif; ?>
 
@@ -134,7 +147,12 @@
                             'edit_product' => './edit_product.php',
                             'edit_category' => './edit_category.php',
                             'settings' => './settings.php',
-                            'history' => './order_history.php'
+                            'history' => './order_history.php',
+                            'viewcart' => './cart.php',
+                            'editprofile' => './customer_info.php',
+                            'cart' => './cart.php'
+
+                            
                         ];
 
                         if(array_key_exists($content, $pages) && file_exists($pages[$content])) {

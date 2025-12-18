@@ -111,7 +111,7 @@
                             back to dashboard
                         </a>
                     <?php else : ?>
-                         <a href="login.html" class="bg-white  text-purple-600 px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
+                         <a href="login.php" class="bg-white  text-purple-600 px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg hover:bg-gray-100 transition">
                         <i class="fas fa-user"></i>
                         Login/Create
                     </a>
